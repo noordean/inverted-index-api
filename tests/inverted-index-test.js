@@ -33,12 +33,12 @@ describe('Search index', () => {
   });
 
   it('should check if varied number of search arguments is handled', () => {
-    expect(index.searchIndex('life','tomorrow')).toEqual([['life', [1]], ['tomorrow', [0]]]); 
-    expect(index.searchIndex('life','tomorrow','is')).toEqual([['life',[1]],["tomorrow", [0]], ['is', [0, 1]]]);
+    expect(index.searchIndex('life', 'tomorrow')).toEqual([['life', [1]], ['tomorrow', [0]]]);
+    expect(index.searchIndex('life', 'tomorrow', 'is')).toEqual([['life', [1]], ['tomorrow', [0]], ['is', [0, 1]]]);
   });
 
   it('should check for words in both documents', () => {
-    expect(index.searchIndex('is')).toEqual([['is', [0,1]]]); 
-    expect(index.searchIndex('life', 'is', '')).toEqual([['life',[1]],['is', [0,1]], ["tomorrow", [1]]]); 
+    expect(index.searchIndex('is')).toEqual([['is', [0, 1]]]);
+    expect(index.searchIndex('life', 'is', '')).toEqual([['life', [1]], ['is', [0, 1]], ['tomorrow', [1]]]);
   });
 });
