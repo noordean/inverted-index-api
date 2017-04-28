@@ -6,13 +6,12 @@ class invertedIndex {
   }
 
   readFile(fileName) {
- 	const fs = require('fs');
-  	const that = this;
-  	this.fileContent = JSON.parse(fs.readFileSync('./fixtures/'+fileName));
+    const fs = require('fs');
+    this.fileContent = JSON.parse(fs.readFileSync('./fixtures/'+fileName));
   }
 
   createIndex(fileName) {
-  	this.readFile(fileName);
+    this.readFile(fileName);
     const innerIndex = {};
     for (let i = 0; i < this.fileContent.length; i += 1) {
       for (const key in this.fileContent[i]) {
