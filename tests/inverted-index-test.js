@@ -2,7 +2,8 @@
 const index = require('../src/inverted-index.js');
 
 
-index.createIndex('book');
+index.createIndex('book1.json');
+index.createIndex('book2.json');
 
 describe('Read book data', () => {
   it('should return true for valid JSON array', () => {
@@ -17,12 +18,12 @@ describe('Read book data', () => {
 });
 
 describe('Populate index', () => {
-  it('should return [0, 1] for "the" in the "book" document', () => {
-    expect(index.index.book.the).toEqual([0, 1]);
+  it('should return [0, 1] for "the" in the "book2.json" document', () => {
+    expect(index.index['book2.json'].the).toEqual([0, 1]);
   });
 
-  it('should return [0] for "inquiry" in the "book" document', () => {
-    expect(index.index.book.inquiry).toEqual([0]);
+  it('should return [1] for "us" in the "book1.json" document', () => {
+    expect(index.index['book1.json'].us).toEqual([1]);
   });
 });
 

@@ -1,22 +1,18 @@
+
 class invertedIndex {
   constructor() {
     this.index = {};
-    this.fileContent = [
-      {
-        'title': 'An inquiry into the wealth of nations',
-        'text': 'This string seeks to help you understand the problem set'
-      },
-      {
-        'title': 'From third world to first world',
-        'text': 'This string is also to help you understand the problem set'
-      }
-    ];
+    this.fileContent = undefined;
   }
-  readFile() {
-  // code to read file here;
+
+  readFile(fileName) {
+ 	const fs = require('fs');
+  	const that = this;
+  	this.fileContent = JSON.parse(fs.readFileSync('./fixtures/'+fileName));
   }
 
   createIndex(fileName) {
+  	this.readFile(fileName);
     const innerIndex = {};
     for (let i = 0; i < this.fileContent.length; i += 1) {
       for (const key in this.fileContent[i]) {
