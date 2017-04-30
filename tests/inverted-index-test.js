@@ -7,13 +7,17 @@ index.createIndex('book2.json');
 
 describe('Read book data', () => {
   it('should return true for valid JSON array', () => {
-    expect(Array.isArray(index.fileContent)).toBe(true);
-    expect(index.fileContent[0] instanceof Object).toBe(true);
-    expect(index.fileContent[index.fileContent.length - 1] instanceof Object).toBe(true);
+    expect(Array.isArray(index.readFile('book1.json'))).toBe(true);
+    expect(index.readFile('book2.json')[0] instanceof Object).toBe(true);
+    expect(index.readFile('book1.json')[index.readFile('book1.json').length - 1] instanceof Object).toBe(true);
   });
 
   it('should not return zero for file content length', () => {
-    expect(index.fileContent.length).not.toBe(0);
+    expect(index.readFile('book1.json')).not.toBe(0);
+  });
+
+  it('should return an error message for invalid file', () => {
+    expect(index.readFile('invalidBook.json')).toBe('Invalid JSON file');
   });
 });
 
