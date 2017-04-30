@@ -62,7 +62,8 @@ class invertedIndex {
       return { 'error': 'Index has not been created. Kindly create index before searching' }
     }
     else {
-      if (arguments[0].match('.json$') !== null) {
+      // if (!Array.isArray(arguments[0]))
+      if (!Array.isArray(arguments[0]) && arguments[0].match('.json$') !== null) {
         if (this.index[arguments[0]] === undefined){
           return { 'error': 'Index has not been created for the specified file' };
         }
