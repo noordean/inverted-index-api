@@ -31,6 +31,7 @@
     "gulp-jasmine": "^2.4.2",
     "gulp-nodemon": "^2.2.1",
     "gulp-webserver": "^0.9.1",
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.14.5",
+    "supertest": "^3.0.0"
   }
 }
