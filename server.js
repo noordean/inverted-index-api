@@ -14,10 +14,9 @@ app.listen(process.env.PORT, () => {
 });
 
 app.post('/api/create', (req, res) => {
-  index.createIndex(req.body.file);
-  res.json({ message: 'Index created' });
+  res.json(index.createIndex(req.body.fileName));
 });
 
 app.post('/api/search', (req, res) => {
-  res.json(index.searchIndex(req.body.token));
+  res.json(index.searchIndex(req.body.searchTerm));
 });
