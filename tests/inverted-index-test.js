@@ -44,7 +44,7 @@ describe('Search index', () => {
     expect(index.searchIndex(['understand', 'from'])).toEqual({ 'understand':[0,1], 'from': [1] });
   });
 
-  it('should return toEqual({ "to": [0, 1], "is": [1], "into": [0] }) for "to","is","beginner"', () => {
+  it('should return { "to": [0, 1], "is": [1], "into": [0] } for "to","is","beginner"', () => {
     expect(index.searchIndex('to', 'is', 'into')).toEqual({ 'to': [0, 1], 'is': [1], 'into': [0] });
   });
 

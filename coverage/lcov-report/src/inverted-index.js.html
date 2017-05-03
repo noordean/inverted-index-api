@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src\inverted-index.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">src/</a> inverted-index.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">80.9% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>72/89</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">57.41% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>31/54</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">85.71% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>18/21</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">79.71% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>55/69</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">69×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">1×</span></td><td class="text"><pre class="prettyprint lang-js">//const fs = require('fs');
+import fs from 'fs';
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-1 cbranch-no" title="branch not covered" ></span></span></span>
+class invertedIndex {
+  constructor() {<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span><span class="missing-if-branch" title="else path not taken" >E</span><span class="missing-if-branch" title="else path not taken" >E</span></span>
+    this.index = {};
+  }
+&nbsp;
+  isValidJSON(fileName) {
+    try {
+      JSON.parse(fs.readFileSync('./fixtures/' + fileName));
+    } catch (e) {<span class="branch-0 cbranch-no" title="branch not covered" ></span>
+      return false;
+    }<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+    return true;
+  }
+&nbsp;
+  readFile(fileName) {
+    if (this.isValidJSON(fileName)) {
+      return JSON.parse(fs.readFileSync('./fixtures/' + fileName));
+    }
+    else {
+      return 'Invalid JSON file';
+    }
+  }
+&nbsp;
+  createIndex(fileName) {
+    if (this.readFile(fileName) !== 'Invalid JSON file'){
+      const innerIndex = {};
+      for (let i = 0; i &lt; this.readFile(fileName).length; i += 1) {
+        for (const key in this.readFile(fileName)[i]) {
+          this.readFile(fileName)[i][key].toLowerCase().replace(/\W+/g, ' ').split(' ').forEach((term) =&gt; {
+            if (innerIndex[term] !== undefined) {
+              if (innerIndex[term].length &lt; 2 &amp;&amp; innerIndex[term][0] === 0) {
+                innerIndex[term].push(1);
+              }
+            }
+            else {
+              innerIndex[term] = [i];
+            }
+          });
+        }
+      }
+      this.index[fileName] = innerIndex;
+      return this.index;
+    }
+    el<span class="missing-if-branch" title="else path not taken" >E</span>se {
+      return { 'error': 'Index could not be created, invalid JSON file selected'};
+    }
+  }
+&nbsp;
+  searchIndex() {
+    const that = this;
+    const searchResult = {};
+    const getSearchTerms = [];
+        /* If  a fileName is specified as first argument
+         * search the searchTerms in the specified fileName
+         * if the word(token) is present in the object,
+         * include its index value in searchResult object
+         * else include [-1] as its index value which  signifies 'word not found'
+         */
+    if (Object.keys(this.index).length === 0) {
+      return { 'error': 'Index has not been created. Kindly create index before searching' }
+    }
+    else {
+      // if (!Array.isArray(arguments[0]))
+      if (!Array.isArray(arguments[0]) &amp;&amp; arguments[0].match('.json$') !== null) {
+        if (this.index[arguments[0]] === undefined){
+          return { 'error': 'Index has not been created for the specified file' };
+        }
+        else {
+          for (let i = 1; i &lt; arguments.length; i += 1) {
+            if (Array.isArray(arguments[i])) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>      arguments[i].forEach((value) <span class="branch-0 cbranch-no" title="branch not covered" >=&gt; {</span>
+                getSearchTerms.push(value.toLowerCase());
+<span class="cstat-no" title="statement not covered" >              });</span>
+            }
+            else {
+              getSearchTerms.push(arguments[i].toLowerCase());
+            }
+          }
+&nbsp;
+          getSearchTerms.forEach((val) =&gt; {
+            if (that.index[arguments[0]][val] !== undefined) {
+              searchResult[val] = that.index[arguments[0]][val];
+            }
+            else {
+              searchResult[val] = [-1];
+            }
+          });
+          return searchResult;
+        }
+      <span class="missing-if-branch" title="if path not taken" >I</span>}
+      el<span class="cstat-no" title="statement not covered" >se {</span>
+      /* consider the whole arguments as search terms
+       * and search through all the fileNames in the index object
+       *<span class="missing-if-branch" title="if path not taken" >I</span>/
+        fo<span class="cstat-no" title="statement not covered" >r (let i = 0; i &lt; arguments.length; i += 1) {</span>
+          if<span class="cstat-no" title="statement not covered" > (Array.isArray(arguments[i])) {</span>
+            arguments[i].forEach((value) =&gt; {
+<span class="cstat-no" title="statement not covered" >              getSearchTerms.push(value.toLowerCase());</span>
+            })<span class="cstat-no" title="statement not covered" >;</span>
+          }<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+          else {<span class="cstat-no" title="statement not covered" ></span>
+            getSearchTerms.push(arguments[i].toLowerCase());
+          }
+        }<span class="cstat-no" title="statement not covered" ></span>
+&nbsp;
+        for (const key in this.index) {
+          getSearchTerms.forEach((val) =&gt; {
+<span class="cstat-no" title="statement not covered" >            if (that.index[key][val<span class="fstat-no" title="function not covered" >] !== undefined)</span> {</span>
+<span class="cstat-no" title="statement not covered" >              searchResult[val] = that.index[key][val];</span>
+            }<span class="cstat-no" title="statement not covered" ></span>
+            else {
+              se<span class="cstat-no" title="statement not covered" >archResult[val] = [-1];</span>
+            }
+          });
+        }<span class="cstat-no" title="statement not covered" ></span>
+        return searchResult;
+      }
+    }
+  }
+}
+&nbsp;
+module.exports = new invertedIndex();
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed May 03 2017 15:44:44 GMT+0100 (W. Central Africa Standard Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
