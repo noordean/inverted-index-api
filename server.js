@@ -1,18 +1,19 @@
 
-
-// const express = require('express');
-
 import express from 'express';
-
-const bodyParser = require('body-parser');
-
-const index = require(__dirname+'/src/inverted-index.js');
-
-const supertest = require('supertest');
+import bodyParser from 'body-parser';
+import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
+//import supertest from 'supertest';
+import indexObj from './src/inverted-index';
 
 require('dotenv').config();
 
+const upload = multer({ dest: 'fixtures/' }).single('fileContent');
+const search = multer();
+
 const app = express();
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -21,14 +22,35 @@ app.listen(process.env.PORT, () => {
 });
 
 app.post('/api/create', (req, res) => {
-  res.json(index.createIndex(req.body.fileName));
+  upload(req, res, (err) => {
+    if (err) {
+      res.json({ error: 'Uploading unsuccessful!' });
+    }
+   if (req.file === undefined) {
+      res.json({ error: 'Kindly upload a file' });
+    }
+    else {
+      if (req.file.originalname.match('.json$') === null) {
+        res.json({ error: 'Invalid file uploaded!' });
+      }
+      else {
+        res.json(indexObj.createIndex(req.body.fileName, indexObj.readFile(req.file.filename)));
+      }
+      fs.unlinkSync(path.join('fixtures', req.file.filename)); // delete the uploaded file once the index is created
+    }
+  });
 });
 
-app.post('/api/search', (req, res) => {
-  res.json(index.searchIndex(req.body.searchTerm));
+app.post('/api/search', search.single(), (req, res) => {
+  if (req.body.fileName !== undefined) {
+    res.json(indexObj.searchIndex(indexObj.index, req.body.fileName, req.body.searchTerms));
+  }
+  else {
+    res.json(indexObj.searchIndex(indexObj.index, req.body.searchTerms));
+  }
 });
 
-supertest(app)
+/*supertest(app)
         .post('/api/create')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -50,4 +72,4 @@ supertest(app)
           if (err) {
             throw err;
           }
-        });
+        });*/
