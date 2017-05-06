@@ -6,5 +6,5 @@ before_script:
 script: 
     - gulp run-tests
 after_success:
-    - gulp coverage coveralls
+    - gulp coverage
 
