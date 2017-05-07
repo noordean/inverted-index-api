@@ -113,7 +113,7 @@ class invertedIndex {
       return this.index;
     }
     else {
-      return { error: 'Index could not be created, Uploaded file must be a valid JSON file and file name must have .json extension' };
+      return { error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' };
     }
   }
 

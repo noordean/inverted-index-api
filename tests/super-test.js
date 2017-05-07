@@ -1,14 +1,17 @@
 import supertest from 'supertest';
+import path from 'path';
 import indexObj from '../src/inverted-index';
 
+indexObj.createIndex('book1.json', indexObj.readFile('book1.json'));
 const superObj = {
   create: (app) => {
          supertest(app)
         .post('/api/create')
         .expect('Content-Type', /json/)
         .expect(200)
-       // .send({ fileName: 'book1.json', fileContent: indexObj.readFile('book1.json')})
-        //.expect({ error: 'Index could not be created, invalid JSON file selected'})
+        .field('fileName', 'malformedBook.json')
+        .attach('fileContent', path.join('fixtures', 'malformedBook.json'))
+        .expect({ error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' })
         .end((err, res) => {
           if (err) {
             throw err;
@@ -21,8 +24,8 @@ const superObj = {
         .post('/api/search')
         .expect('Content-Type', /json/)
         .expect(200)
-        //.send({ searchTerm: 'the' })
-       // .expect({ error: 'Index has not been created. Kindly create index before searching' })
+        .send({ fileName: 'book1.json', searchTerms: 'the' })
+        .expect({ the: [0, 1] })
         .end((err, res) => {
           if (err) {
             throw err;
