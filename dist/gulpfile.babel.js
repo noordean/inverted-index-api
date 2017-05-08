@@ -28,6 +28,10 @@ var _gulpCoveralls = require('gulp-coveralls');
 
 var _gulpCoveralls2 = _interopRequireDefault(_gulpCoveralls);
 
+var _gulpExit = require('gulp-exit');
+
+var _gulpExit2 = _interopRequireDefault(_gulpExit);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // this transpiles all .js files except those in dist and node_modules folders
@@ -37,7 +41,7 @@ _gulp2.default.task('babel', function () {
 
 // this runs the jasmine tests through an already transpiled file
 _gulp2.default.task('run-tests', ['babel'], function () {
-  _gulp2.default.src(_path2.default.join('dist', 'tests', 'inverted-index-test.js')).pipe((0, _gulpJasmine2.default)());
+  _gulp2.default.src(_path2.default.join('dist', 'tests', 'inverted-index-test.js')).pipe((0, _gulpJasmine2.default)()).pipe((0, _gulpExit2.default)());
 });
 
 // this starts the server at the specified port in .env file
@@ -59,5 +63,5 @@ _gulp2.default.task('test', ['pre-test'], function () {
 });
 
 _gulp2.default.task('coverage', ['test'], function () {
-  _gulp2.default.src('coverage/**/lcov.info').pipe((0, _gulpCoveralls2.default)());
+  _gulp2.default.src('coverage/**/lcov.info').pipe((0, _gulpCoveralls2.default)()).pipe((0, _gulpExit2.default)());
 });

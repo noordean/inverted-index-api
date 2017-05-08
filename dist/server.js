@@ -1,5 +1,13 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _dotenv = require('dotenv');
+
+var _dotenv2 = _interopRequireDefault(_dotenv);
+
 var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
@@ -8,17 +16,13 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _superTest = require('./tests/super-test');
-
-var _superTest2 = _interopRequireDefault(_superTest);
-
 var _route = require('./route/route');
 
 var _route2 = _interopRequireDefault(_route);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-require('dotenv').config();
+_dotenv2.default.config();
 
 var app = (0, _express2.default)();
 
@@ -32,5 +36,4 @@ app.listen(process.env.PORT, function () {
 // load the routes
 app.use('/', _route2.default);
 
-_superTest2.default.create(app); // load supertest for create endpoint
-_superTest2.default.search(app); // load supertest for search endpoint
+exports.default = app;

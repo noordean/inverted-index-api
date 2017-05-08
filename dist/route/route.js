@@ -30,6 +30,7 @@ var upload = (0, _multer2.default)({ dest: 'fixtures/' }).single('fileContent');
 var search = (0, _multer2.default)(); // This is used for search endpoint since no uploading is involved
 var router = _express2.default.Router();
 
+// create endpoint
 router.post('/api/create', function (req, res) {
   upload(req, res, function (err) {
     if (err) {
@@ -48,10 +49,17 @@ router.post('/api/create', function (req, res) {
   });
 });
 
+// search endpoint
 router.post('/api/search', search.single(), function (req, res) {
   if (req.body.fileName !== undefined) {
+    if (req.body.searchTerms.length === 0) {
+      res.json({ error: 'The searchTerms cannot be empty' });
+    }
     res.json(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, req.body.fileName, req.body.searchTerms));
   } else {
+    if (req.body.searchTerms.length === 0) {
+      res.json({ error: 'The searchTerms cannot be empty' });
+    }
     res.json(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, req.body.searchTerms));
   }
 });

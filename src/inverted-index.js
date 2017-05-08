@@ -39,12 +39,10 @@ class invertedIndex {
     if (Array.isArray(fileContent)) {
       if ((fileContent[0] instanceof Object) && (fileContent[fileContent.length - 1] instanceof Object)) {
         return true;
-      }
-      else {
+      } else {
         return false;
       }
-    }
-    else {
+    } else {
       return false;
     }
   }
@@ -57,8 +55,7 @@ class invertedIndex {
   isValidFileName(fileName) {
     if (fileName.match('.json$') === null) {
       return false;
-    }
-    else {
+    } else {
       return true;
     }
   }
@@ -79,8 +76,8 @@ class invertedIndex {
         for (const key in fileContent[i]) {
           const getTokensPerKey = [];
           const getEachKey = fileContent[i][key].toLowerCase().replace(/\W+/g, ' ').split(' ');
-          for (let j = 0; j < getEachKey.length; j += 1){
-            if (getTokensPerKey.indexOf(getEachKey[j]) === -1){
+          for (let j = 0; j < getEachKey.length; j += 1) {
+            if (getTokensPerKey.indexOf(getEachKey[j]) === -1) {
               getTokensPerKey.push(getEachKey[j]);
             }
           }
@@ -96,12 +93,11 @@ class invertedIndex {
       getAllUniqueTokens.forEach((term) => {
         if (innerIndex[term] !== undefined) {
           innerIndex[term] = [...innerIndex[term], Number(innerIndex[term][innerIndex[term].length - 1] + 1)];
-          }
-        else {
-          for (let l = 0; l < fileContent.length; l += 1){
-            for (const keyy in fileContent[l]){
+        } else {
+          for (let l = 0; l < fileContent.length; l += 1) {
+            for (const keyy in fileContent[l]) {
               if (fileContent[l][keyy].toLowerCase().split(' ').indexOf(term) !== -1){
-                if (innerIndex[term] === undefined){
+                if (innerIndex[term] === undefined) {
                   innerIndex[term] = [l];
                 }
               }
@@ -111,8 +107,7 @@ class invertedIndex {
       });
       this.index[fileName] = innerIndex;
       return this.index;
-    }
-    else {
+    } else {
       return { error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' };
     }
   }
@@ -131,20 +126,17 @@ class invertedIndex {
 
     if (Object.keys(index).length === 0) {
       return { error: 'Index has not been created. Kindly create index before searching' };
-    }
-    else {
+    } else {
       if (Array.isArray(fileName)) {
         getSearchTerms.push(...fileName); // definitly the second arg is seachTerms
-      }
-      else {
+      } else {
         getSearchTerms.push(fileName); // definitly the second arg is fileName
       }
 
       for (let i = 0; i < searchTerms.length; i += 1) {
         if (Array.isArray(searchTerms[i])) {
           getSearchTerms.push(...searchTerms[i]);
-        }
-        else {
+        } else {
           getSearchTerms.push(searchTerms[i]);
         }
       }
@@ -152,8 +144,7 @@ class invertedIndex {
       if ((getSearchTerms[0]).match('.json$') !== null) {
         if (index[getSearchTerms[0]] === undefined) {
           return { error: 'Index has not been created for the specified file' };
-        }
-        else {
+        } else {
           getSearchTerms = getSearchTerms.filter((data) => {
             return data.match('.json$') === null;
           });
@@ -165,16 +156,14 @@ class invertedIndex {
           getSearchTerms.forEach((val) => {
             if (index[fileName][val] !== undefined) {
               searchResult[val] = index[fileName][val];
-            }
-            else {
+            } else {
               // [-1] specifies 'word not found'
               searchResult[val] = [-1];
             }
           });
           return searchResult;
         }
-      }
-      else {
+      } else {
        // search through all the files in the index object and specify the file in which it's found
         getSearchTerms = getSearchTerms.map((data) => {
           return data.toLowerCase();
@@ -186,8 +175,7 @@ class invertedIndex {
           getSearchTerms.forEach((val) => {
             if (index[key][val] !== undefined) {
               innerResult[val] = index[key][val];
-            }
-            else {
+            } else {
               // [-1] specifies 'word not found'
               innerResult[val] = [-1];
             }

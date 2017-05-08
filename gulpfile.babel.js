@@ -6,6 +6,7 @@ import path from 'path';
 import nodemon from 'gulp-nodemon';
 import istanbul from 'gulp-istanbul';
 import coveralls from 'gulp-coveralls';
+import exit from 'gulp-exit';
 
 
 
@@ -19,7 +20,8 @@ gulp.task('babel', () => {
 // this runs the jasmine tests through an already transpiled file
 gulp.task('run-tests', ['babel'], () => {
   gulp.src(path.join('dist', 'tests', 'inverted-index-test.js'))
-  .pipe(jasmine());
+  .pipe(jasmine())
+  .pipe(exit());
 });
 
 // this starts the server at the specified port in .env file
@@ -46,6 +48,7 @@ gulp.task('test', ['pre-test'], () => {
 
 gulp.task('coverage', ['test'], () => {
   gulp.src('coverage/**/lcov.info')
-    .pipe(coveralls());
+    .pipe(coveralls())
+    .pipe(exit());
 });
 
