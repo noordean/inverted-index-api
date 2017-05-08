@@ -29,4 +29,5 @@ The API can be tested with postman as described below:
 - Search for words by making another request to localhost:3000/api/search with the following form-data bodies:
   - fileName (Optional): The document you want to search from
   - searchTerms: The words you are searching. It can be an array of words.
+  
 Note: [-1] denotes 'word not found'
