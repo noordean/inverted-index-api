@@ -12,7 +12,7 @@ import exit from 'gulp-exit';
 
 // this transpiles all .js files except those in dist and node_modules folders
 gulp.task('babel', () => {
-  return gulp.src(['./**/*.js', '!dist/**', '!node_modules/**'])
+  return gulp.src(['./**/*.js', '!dist/**', '!node_modules/**', '!gulpfile.babel.js', '!coverage/**'])
   .pipe(babel())
   .pipe(gulp.dest('dist'));
 });
@@ -48,7 +48,6 @@ gulp.task('test', ['pre-test'], () => {
 
 gulp.task('coverage', ['test'], () => {
   gulp.src('coverage/**/lcov.info')
-    .pipe(coveralls())
-    .pipe(exit());
+    .pipe(coveralls());
 });
 

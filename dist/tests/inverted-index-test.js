@@ -89,8 +89,16 @@ describe('Read book data', function () {
     expect(_invertedIndex2.default.readFile('book1.json').length).not.toBe(0);
   });
 
-  it('should return an error message for malformed file', function () {
+  it('should return an error message for a malformed file', function () {
     expect(_invertedIndex2.default.readFile('malformedBook.json')).toBe('Malformed JSON file');
+  });
+
+  it('should return an error message for an empty file', function () {
+    expect(_invertedIndex2.default.readFile('emptyBook.json')).toBe('Empty JSON file');
+  });
+
+  it('should return an error message for an invalid file', function () {
+    expect(_invertedIndex2.default.readFile('invalidJsonFile.json')).toBe('Invalid JSON file');
   });
 });
 
@@ -106,30 +114,42 @@ describe('Populate index', function () {
 
 describe('Search index', function () {
   it('should return { "third": [1] } for the word "third"', function () {
-    expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, 'third')).toEqual({ 'book2.json': { 'third': [1] }, 'book1.json': { 'third': [-1] } });
+    expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, 'third')).toEqual({ 'book2.json': { third: [1] }, 'book1.json': { third: [-1] } });
   });
 
   it('should return { "set": [0, 1] } for the word "Set" in book2.json', function () {
-    expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, 'book2.json', 'Set')).toEqual({ 'set': [0, 1] });
+    expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, 'book2.json', 'Set')).toEqual({ set: [0, 1] });
   });
 
-  it('should return { "understand":[0,1], "from": [1] } for array ["understand","from"]', function () {
+  it('should ensure searchIndex goes through all indexed files if a fileName is not provided', function () {
     var result = { 'book2.json': { from: [1], understand: [0, 1] }, 'book1.json': { from: [-1], understand: [-1] } };
     expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, ['understand', 'from'])).toEqual(result);
   });
 
-  it('should return { "to": [0, 1], "is": [1], "into": [0] } for "to","is","into"', function () {
-    expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, 'book2.json', 'to', 'is', 'into')).toEqual({ 'to': [0, 1], 'is': [1], 'into': [0] });
+  it('should ensure searchIndex handles varied number of search terms', function () {
+    expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, 'book2.json', 'to', 'is', ['into', 'problem'])).toEqual({ to: [0, 1], is: [1], into: [0], problem: [0, 1] });
   });
 
-  it('should return [-1] for any word not present', function () {
+  it('should ensure index returns correct result when searched', function () {
     expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, 'book1.json', 'catwalk')).toEqual({ catwalk: [-1] });
+  });
+
+  it('should ensure a valid index is passed in', function () {
+    expect(_invertedIndex2.default.searchIndex('My index', 'book1.json', 'catwalk')).toEqual({ error: 'A valid index has not been created. Kindly create index before searching' });
+  });
+
+  it('should ensure searchIndex handles an array of search terms', function () {
+    expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, 'book1.json', ['accept', 'the'])).toEqual({ accept: [1], the: [0, 1] });
+  });
+
+  it('should return proper error message if index has not been created for the provided filename', function () {
+    expect(_invertedIndex2.default.searchIndex(_invertedIndex2.default.index, 'book4.json', 'third')).toEqual({ error: 'Index has not been created for the specified file' });
   });
 });
 
 describe('create index endpoint', function () {
   it('should return an error message for malformed file', function () {
-    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'malformedBook.json').attach('fileContent', _path2.default.join('fixtures', 'malformedBook.json')).expect({ error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' }).end(function (err, res) {
+    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'malformedBook.json').attach('fileContent', _path2.default.join('fixtures', 'malformedBook.json')).expect({ error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' }).end(function (err) {
       if (err) {
         throw err;
       }
@@ -137,7 +157,7 @@ describe('create index endpoint', function () {
   });
 
   it('should create correct index for any file uploaded', function () {
-    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'book1.json').attach('fileContent', _path2.default.join('fixtures', 'book1.json')).expect(createdIndexForBook1).end(function (err, res) {
+    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'book1.json').attach('fileContent', _path2.default.join('fixtures', 'book1.json')).expect(createdIndexForBook1).end(function (err) {
       if (err) {
         throw err;
       }
@@ -145,7 +165,7 @@ describe('create index endpoint', function () {
   });
 
   it('should return "kindly upload a file" when no file is uploaded', function () {
-    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'book1.json').expect({ error: 'Kindly upload a file' }).end(function (err, res) {
+    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'book1.json').expect({ error: 'Kindly upload a file' }).end(function (err) {
       if (err) {
         throw err;
       }
@@ -153,7 +173,7 @@ describe('create index endpoint', function () {
   });
 
   it('should return "Invalid file uploaded" when no file is uploaded', function () {
-    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'invalidBook.txt').attach('fileContent', _path2.default.join('fixtures', 'invalidBook.txt')).expect({ error: 'Invalid file uploaded!' }).end(function (err, res) {
+    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'invalidBook.txt').attach('fileContent', _path2.default.join('fixtures', 'invalidBook.txt')).expect({ error: 'Invalid file uploaded!' }).end(function (err) {
       if (err) {
         throw err;
       }
@@ -163,7 +183,7 @@ describe('create index endpoint', function () {
 
 describe('search index endpoint', function () {
   it('should return "Index has not been created for the specified file" if index has not been created', function (done) {
-    (0, _supertest2.default)(_server2.default).post('/api/search').send({ fileName: 'book3.json', searchTerms: 'the' }).expect({ error: 'Index has not been created for the specified file' }).end(function (err, res) {
+    (0, _supertest2.default)(_server2.default).post('/api/search').send({ fileName: 'book3.json', searchTerms: 'the' }).expect({ error: 'Index has not been created for the specified file' }).end(function (err) {
       if (err) {
         done.fail(err);
       } else {
@@ -173,7 +193,7 @@ describe('search index endpoint', function () {
   });
 
   it('should return correct result if both fileName and searchTerms are supplied', function (done) {
-    (0, _supertest2.default)(_server2.default).post('/api/search').send({ fileName: 'book1.json', searchTerms: 'best' }).expect({ best: [0] }).end(function (err, res) {
+    (0, _supertest2.default)(_server2.default).post('/api/search').send({ fileName: 'book1.json', searchTerms: 'best' }).expect({ best: [0] }).end(function (err) {
       if (err) {
         done.fail(err);
       } else {
@@ -183,7 +203,7 @@ describe('search index endpoint', function () {
   });
 
   it('should return correct result if fileName is not supplied', function (done) {
-    (0, _supertest2.default)(_server2.default).post('/api/search').send({ searchTerms: 'today' }).expect({ 'book1.json': { today: [0] }, 'book2.json': { today: [-1] } }).end(function (err, res) {
+    (0, _supertest2.default)(_server2.default).post('/api/search').send({ searchTerms: 'today' }).expect({ 'book1.json': { today: [0] }, 'book2.json': { today: [-1] } }).end(function (err) {
       if (err) {
         done.fail(err);
       } else {

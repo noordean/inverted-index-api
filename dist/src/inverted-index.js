@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _fs = require('fs');
@@ -24,15 +26,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * invertedIndex class
  * @class
  */
-var invertedIndex = function () {
+var InvertedIndex = function () {
   /**
    * having index as object property
    * @constructor
    */
-  function invertedIndex() {
-    _classCallCheck(this, invertedIndex);
+  function InvertedIndex() {
+    _classCallCheck(this, InvertedIndex);
 
     this.index = {};
+    this.fileName = undefined;
+    this.fileContent = undefined;
   }
 
   /**
@@ -42,17 +46,22 @@ var invertedIndex = function () {
    */
 
 
-  _createClass(invertedIndex, [{
+  _createClass(InvertedIndex, [{
     key: 'readFile',
     value: function readFile(fileName) {
+      this.file = fileName;
       try {
         JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName)));
       } catch (e) {
+        return 'Invalid JSON file';
+      }
+      if (JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName))).length === 0) {
+        return 'Empty JSON file';
+      } else if (JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName)))[0].title === undefined || JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName)))[0].text === undefined) {
         return 'Malformed JSON file';
       }
       return JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName)));
     }
-
     /**
      * @description validate uploaded file
      * @param {Object} fileContent - The content of the file being uploaded
@@ -62,15 +71,14 @@ var invertedIndex = function () {
   }, {
     key: 'isValidJSON',
     value: function isValidJSON(fileContent) {
+      this.fileContent = fileContent;
       if (Array.isArray(fileContent)) {
         if (fileContent[0] instanceof Object && fileContent[fileContent.length - 1] instanceof Object) {
           return true;
-        } else {
-          return false;
         }
-      } else {
         return false;
       }
+      return false;
     }
 
     /**
@@ -82,11 +90,46 @@ var invertedIndex = function () {
   }, {
     key: 'isValidFileName',
     value: function isValidFileName(fileName) {
+      this.fileName = fileName;
       if (fileName.match('.json$') === null) {
         return false;
-      } else {
+      }
+      return true;
+    }
+
+    /**
+     * @description: checks for empty file array
+     * @param {Object} fileContent - The content of the file being uploaded
+     * @return {Boolean} true/false
+     */
+
+  }, {
+    key: 'isEmptyJSON',
+    value: function isEmptyJSON(fileContent) {
+      this.fileContent = fileContent;
+      if (fileContent.length === 0) {
         return true;
       }
+      return false;
+    }
+
+    /**
+     * @description: checks for a valid index format
+     * @param {Object} index - The index created from the uploaded file
+     * @return {Boolean} true/false
+     */
+
+  }, {
+    key: 'isIndexValid',
+    value: function isIndexValid(index) {
+      this.fileName = '';
+      if (index instanceof Object) {
+        if (!Array.isArray(index)) {
+          return true;
+        }
+        return false;
+      }
+      return false;
     }
     /**
      * @description: Loop through the uploaded JSON file,convert each key-value to lowercase,
@@ -104,22 +147,23 @@ var invertedIndex = function () {
         var innerIndex = {};
         var getAllUniqueTokens = [];
         for (var i = 0; i < fileContent.length; i += 1) {
-          var getTokensPerObject = [];
-          for (var key in fileContent[i]) {
-            var getTokensPerKey = [];
-            var getEachKey = fileContent[i][key].toLowerCase().replace(/\W+/g, ' ').split(' ');
+          var getWordsInEachObject = [];
+          var getObjectKeysInFile = Object.keys(fileContent[i]);
+          for (var m = 0; m < getObjectKeysInFile.length; m += 1) {
+            var getWordsInEachKeyOfEachObject = [];
+            var getEachKey = fileContent[i][getObjectKeysInFile[m]].toLowerCase().replace(/\W+/g, ' ').split(' ');
             for (var j = 0; j < getEachKey.length; j += 1) {
-              if (getTokensPerKey.indexOf(getEachKey[j]) === -1) {
-                getTokensPerKey.push(getEachKey[j]);
+              if (getWordsInEachKeyOfEachObject.indexOf(getEachKey[j]) === -1) {
+                getWordsInEachKeyOfEachObject.push(getEachKey[j]);
               }
             }
-            for (var k = 0; k < getTokensPerKey.length; k += 1) {
-              if (getTokensPerObject.indexOf(getTokensPerKey[k]) === -1) {
-                getTokensPerObject.push(getTokensPerKey[k]);
+            for (var k = 0; k < getWordsInEachKeyOfEachObject.length; k += 1) {
+              if (getWordsInEachObject.indexOf(getWordsInEachKeyOfEachObject[k]) === -1) {
+                getWordsInEachObject.push(getWordsInEachKeyOfEachObject[k]);
               }
             }
           }
-          getAllUniqueTokens.push.apply(getAllUniqueTokens, getTokensPerObject);
+          getAllUniqueTokens.push.apply(getAllUniqueTokens, getWordsInEachObject);
         }
         getAllUniqueTokens.sort();
         getAllUniqueTokens.forEach(function (term) {
@@ -127,8 +171,9 @@ var invertedIndex = function () {
             innerIndex[term] = [].concat(_toConsumableArray(innerIndex[term]), [Number(innerIndex[term][innerIndex[term].length - 1] + 1)]);
           } else {
             for (var l = 0; l < fileContent.length; l += 1) {
-              for (var keyy in fileContent[l]) {
-                if (fileContent[l][keyy].toLowerCase().split(' ').indexOf(term) !== -1) {
+              var getObjKeys = Object.keys(fileContent[l]);
+              for (var _i = 0; _i < getObjKeys.length; _i += 1) {
+                if (fileContent[l][getObjKeys[_i]].toLowerCase().split(' ').indexOf(term) !== -1) {
                   if (innerIndex[term] === undefined) {
                     innerIndex[term] = [l];
                   }
@@ -139,9 +184,10 @@ var invertedIndex = function () {
         });
         this.index[fileName] = innerIndex;
         return this.index;
-      } else {
-        return { error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' };
+      } else if (this.isEmptyJSON(fileContent)) {
+        return { error: 'Index could not be created, an empty file uploaded' };
       }
+      return { error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' };
     }
 
     /**
@@ -156,82 +202,94 @@ var invertedIndex = function () {
   }, {
     key: 'searchIndex',
     value: function searchIndex(index, fileName) {
+      var _arguments = arguments;
+
       var searchResult = {};
       var getSearchTerms = [];
 
-      if (Object.keys(index).length === 0) {
-        return { error: 'Index has not been created. Kindly create index before searching' };
-      } else {
-        if (Array.isArray(fileName)) {
-          var _getSearchTerms;
+      if (Object.keys(index).length !== 0 && this.isIndexValid(index)) {
+        var _ret = function () {
+          if (Array.isArray(fileName)) {
+            var _getSearchTerms;
 
-          (_getSearchTerms = getSearchTerms).push.apply(_getSearchTerms, _toConsumableArray(fileName)); // definitly the second arg is seachTerms
-        } else {
-          getSearchTerms.push(fileName); // definitly the second arg is fileName
-        }
-
-        for (var i = 0; i < (arguments.length <= 2 ? 0 : arguments.length - 2); i += 1) {
-          if (Array.isArray(arguments.length <= i + 2 ? undefined : arguments[i + 2])) {
-            var _getSearchTerms2;
-
-            (_getSearchTerms2 = getSearchTerms).push.apply(_getSearchTerms2, _toConsumableArray(arguments.length <= i + 2 ? undefined : arguments[i + 2]));
+            (_getSearchTerms = getSearchTerms).push.apply(_getSearchTerms, _toConsumableArray(fileName)); // definitly the second arg is seachTerms
           } else {
-            getSearchTerms.push(arguments.length <= i + 2 ? undefined : arguments[i + 2]);
+            getSearchTerms.push(fileName); // definitely the second arg is fileName
           }
-        }
 
-        if (getSearchTerms[0].match('.json$') !== null) {
-          if (index[getSearchTerms[0]] === undefined) {
-            return { error: 'Index has not been created for the specified file' };
-          } else {
-            getSearchTerms = getSearchTerms.filter(function (data) {
-              return data.match('.json$') === null;
-            });
-            getSearchTerms = getSearchTerms.map(function (data) {
-              return data.toLowerCase();
-            });
-            getSearchTerms.sort();
+          for (var i = 0; i < (_arguments.length <= 2 ? 0 : _arguments.length - 2); i += 1) {
+            if (Array.isArray(_arguments.length <= i + 2 ? undefined : _arguments[i + 2])) {
+              var _getSearchTerms2;
 
-            getSearchTerms.forEach(function (val) {
-              if (index[fileName][val] !== undefined) {
-                searchResult[val] = index[fileName][val];
-              } else {
-                // [-1] specifies 'word not found'
-                searchResult[val] = [-1];
-              }
-            });
-            return searchResult;
+              (_getSearchTerms2 = getSearchTerms).push.apply(_getSearchTerms2, _toConsumableArray(_arguments.length <= i + 2 ? undefined : _arguments[i + 2]));
+            } else {
+              getSearchTerms.push(_arguments.length <= i + 2 ? undefined : _arguments[i + 2]);
+            }
           }
-        } else {
+
+          if (getSearchTerms[0].match('.json$') !== null) {
+            if (index[getSearchTerms[0]] !== undefined) {
+              getSearchTerms = getSearchTerms.filter(function (data) {
+                return data.match('.json$') === null;
+              });
+              getSearchTerms = getSearchTerms.map(function (data) {
+                return data.toLowerCase();
+              });
+              getSearchTerms.sort();
+
+              getSearchTerms.forEach(function (val) {
+                if (index[fileName][val] !== undefined) {
+                  searchResult[val] = index[fileName][val];
+                } else {
+                  // [-1] specifies 'word not found'
+                  searchResult[val] = [-1];
+                }
+              });
+              return {
+                v: searchResult
+              };
+            }
+            return {
+              v: { error: 'Index has not been created for the specified file' }
+            };
+          }
           // search through all the files in the index object and specify the file in which it's found
           getSearchTerms = getSearchTerms.map(function (data) {
             return data.toLowerCase();
           });
           getSearchTerms.sort();
+          var getIndexObj = Object.keys(index);
 
-          var _loop = function _loop(key) {
+          var _loop = function _loop(m) {
             var innerResult = {};
             getSearchTerms.forEach(function (val) {
-              if (index[key][val] !== undefined) {
-                innerResult[val] = index[key][val];
+              if (index[getIndexObj[m]][val] !== undefined) {
+                innerResult[val] = index[getIndexObj[m]][val];
               } else {
                 // [-1] specifies 'word not found'
                 innerResult[val] = [-1];
               }
             });
-            searchResult[key] = innerResult;
+            searchResult[getIndexObj[m]] = innerResult;
           };
 
-          for (var key in index) {
-            _loop(key);
+          for (var m = 0; m < getIndexObj.length; m += 1) {
+            _loop(m);
           }
-          return searchResult;
-        }
+          return {
+            v: searchResult
+          };
+        }();
+
+        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
       }
+      return { error: 'A valid index has not been created. Kindly create index before searching' };
     }
   }]);
 
-  return invertedIndex;
+  return InvertedIndex;
 }();
 
-exports.default = new invertedIndex();
+exports.default = new InvertedIndex();
+// const index = new InvertedIndex();
+// console.log(index.readFile('book1.json'));
