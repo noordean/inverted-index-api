@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/noordean/inverted-index-api.svg?branch=development)](https://travis-ci.org/noordean/inverted-index-api)
-[![Coverage Status](https://coveralls.io/repos/github/noordean/inverted-index-api/badge.svg?branch=master)](https://coveralls.io/github/noordean/inverted-index-api?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/noordean/inverted-index-api/badge.svg?branch=server-side)](https://coveralls.io/github/noordean/inverted-index-api?branch=server-side)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b20b01a84bdc40c08cec0ba36021aba9)](https://www.codacy.com/app/noordean/inverted-index-api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=noordean/inverted-index-api&amp;utm_campaign=Badge_Grade)
 # inverted-index-api
 inverted-index-api is an application that enables user to search for text blocks in some certain documents. The
