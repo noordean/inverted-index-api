@@ -98,22 +98,6 @@ var InvertedIndex = function () {
     }
 
     /**
-     * @description: checks for empty file array
-     * @param {Object} fileContent - The content of the file being uploaded
-     * @return {Boolean} true/false
-     */
-
-  }, {
-    key: 'isEmptyJSON',
-    value: function isEmptyJSON(fileContent) {
-      this.fileContent = fileContent;
-      if (fileContent.length === 0) {
-        return true;
-      }
-      return false;
-    }
-
-    /**
      * @description: checks for a valid index format
      * @param {Object} index - The index created from the uploaded file
      * @return {Boolean} true/false
@@ -123,7 +107,7 @@ var InvertedIndex = function () {
     key: 'isIndexValid',
     value: function isIndexValid(index) {
       this.fileName = '';
-      if (index instanceof Object) {
+      if (index instanceof Object && index.error === undefined) {
         if (!Array.isArray(index)) {
           return true;
         }
@@ -184,7 +168,7 @@ var InvertedIndex = function () {
         });
         this.index[fileName] = innerIndex;
         return this.index;
-      } else if (this.isEmptyJSON(fileContent)) {
+      } else if (this.readFile(fileContent) === 'Empty JSON file') {
         return { error: 'Index could not be created, an empty file uploaded' };
       }
       return { error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' };
@@ -291,5 +275,3 @@ var InvertedIndex = function () {
 }();
 
 exports.default = new InvertedIndex();
-// const index = new InvertedIndex();
-// console.log(index.readFile('book1.json'));

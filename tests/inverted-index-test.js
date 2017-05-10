@@ -7,7 +7,7 @@ import app from '../server';
 invertedIndexObject.createIndex('book1.json', invertedIndexObject.readFile('book1.json'));
 invertedIndexObject.createIndex('book2.json', invertedIndexObject.readFile('book2.json'));
 
-const createdIndexForBook1 = {
+const createdIndexForBook = {
   'book1.json': {
     accept: [1],
     as: [1],
@@ -71,7 +71,7 @@ describe('Read book data', () => {
     expect(invertedIndexObject.readFile('book1.json')[invertedIndexObject.readFile('book1.json').length - 1] instanceof Object).toBe(true);
   });
 
-  it('should not return zero for file content length', () => {
+  it('should ensure valid JSON array is not empty', () => {
     expect(invertedIndexObject.readFile('book1.json').length).not.toBe(0);
   });
 
@@ -89,7 +89,7 @@ describe('Read book data', () => {
 });
 
 describe('Populate index', () => {
-  it('should return [0, 1] for "the" in the "book2.json" document', () => {
+  it('should ensure created index is correct', () => {
     expect(invertedIndexObject.index['book2.json'].the).toEqual([0, 1]);
   });
 
@@ -133,6 +133,35 @@ describe('Search index', () => {
   });
 });
 
+describe('Validity of JSON array', () => {
+  it('should return true for a valid JSON array', () => {
+    expect(invertedIndexObject.isValidJSON(invertedIndexObject.readFile('book2.json'))).toBe(true);
+  });
+
+  it('should return false for an invalid JSON array', () => {
+    expect(invertedIndexObject.isValidJSON(invertedIndexObject.readFile('invalidJsonBook.json'))).toBe(false);
+  });
+});
+
+describe('Validity of file name', () => {
+  it('should return true for a valid file', () => {
+    expect(invertedIndexObject.isValidFileName('book2.json')).toBe(true);
+  });
+
+  it('should return false for an invalid file', () => {
+    expect(invertedIndexObject.isValidFileName('invalidBook.txt')).toBe(false);
+  });
+});
+
+describe('Validity of the index created', () => {
+  it('should return true for a valid index', () => {
+    expect(invertedIndexObject.isIndexValid(invertedIndexObject.createIndex('book1.json', invertedIndexObject.readFile('book1.json')))).toBe(true);
+  });
+
+  it('should return false for an invalid index', () => {
+    expect(invertedIndexObject.isIndexValid(invertedIndexObject.createIndex('invalidJsonBook.json', invertedIndexObject.readFile('invalidJsonBook.json')))).toBe(false);
+  });
+});
 
 describe('create index endpoint', () => {
   it('should return an error message for malformed file', () => {
@@ -153,7 +182,7 @@ describe('create index endpoint', () => {
     .post('/api/create')
     .field('fileName', 'book1.json')
     .attach('fileContent', path.join('fixtures', 'book1.json'))
-    .expect(createdIndexForBook1)
+    .expect(createdIndexForBook)
         .end((err) => {
           if (err) {
             throw err;

@@ -21,7 +21,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _invertedIndex2.default.createIndex('book1.json', _invertedIndex2.default.readFile('book1.json'));
 _invertedIndex2.default.createIndex('book2.json', _invertedIndex2.default.readFile('book2.json'));
 
-var createdIndexForBook1 = {
+var createdIndexForBook = {
   'book1.json': {
     accept: [1],
     as: [1],
@@ -85,7 +85,7 @@ describe('Read book data', function () {
     expect(_invertedIndex2.default.readFile('book1.json')[_invertedIndex2.default.readFile('book1.json').length - 1] instanceof Object).toBe(true);
   });
 
-  it('should not return zero for file content length', function () {
+  it('should ensure valid JSON array is not empty', function () {
     expect(_invertedIndex2.default.readFile('book1.json').length).not.toBe(0);
   });
 
@@ -103,7 +103,7 @@ describe('Read book data', function () {
 });
 
 describe('Populate index', function () {
-  it('should return [0, 1] for "the" in the "book2.json" document', function () {
+  it('should ensure created index is correct', function () {
     expect(_invertedIndex2.default.index['book2.json'].the).toEqual([0, 1]);
   });
 
@@ -147,6 +147,36 @@ describe('Search index', function () {
   });
 });
 
+describe('Validity of JSON array', function () {
+  it('should return true for a valid JSON array', function () {
+    expect(_invertedIndex2.default.isValidJSON(_invertedIndex2.default.readFile('book2.json'))).toBe(true);
+  });
+
+  it('should return false for an invalid JSON array', function () {
+    expect(_invertedIndex2.default.isValidJSON(_invertedIndex2.default.readFile('invalidJsonBook.json'))).toBe(false);
+  });
+});
+
+describe('Validity of file name', function () {
+  it('should return true for a valid file', function () {
+    expect(_invertedIndex2.default.isValidFileName('book2.json')).toBe(true);
+  });
+
+  it('should return false for an invalid file', function () {
+    expect(_invertedIndex2.default.isValidFileName('invalidBook.txt')).toBe(false);
+  });
+});
+
+describe('Validity of the index created', function () {
+  it('should return true for a valid index', function () {
+    expect(_invertedIndex2.default.isIndexValid(_invertedIndex2.default.createIndex('book1.json', _invertedIndex2.default.readFile('book1.json')))).toBe(true);
+  });
+
+  it('should return false for an invalid index', function () {
+    expect(_invertedIndex2.default.isIndexValid(_invertedIndex2.default.createIndex('invalidJsonBook.json', _invertedIndex2.default.readFile('invalidJsonBook.json')))).toBe(false);
+  });
+});
+
 describe('create index endpoint', function () {
   it('should return an error message for malformed file', function () {
     (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'malformedBook.json').attach('fileContent', _path2.default.join('fixtures', 'malformedBook.json')).expect({ error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' }).end(function (err) {
@@ -157,7 +187,7 @@ describe('create index endpoint', function () {
   });
 
   it('should create correct index for any file uploaded', function () {
-    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'book1.json').attach('fileContent', _path2.default.join('fixtures', 'book1.json')).expect(createdIndexForBook1).end(function (err) {
+    (0, _supertest2.default)(_server2.default).post('/api/create').field('fileName', 'book1.json').attach('fileContent', _path2.default.join('fixtures', 'book1.json')).expect(createdIndexForBook).end(function (err) {
       if (err) {
         throw err;
       }
