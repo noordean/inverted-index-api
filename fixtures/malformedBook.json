@@ -1,11 +1,11 @@
 
-   
+   [
    	{
-       	"title" : "An inquiry into the wealth of nations",
-        "text": "This string seeks to help you understand the problem set"
+       	"dance" : "An inquiry into the wealth of nations",
+        "sing": "This string seeks to help you understand the problem set"
       },
       {
-        "title": "From third world to first world",
-        "text": "This string is also to help you understand the problem set"
+        "dance": "From third world to first world",
+        "sing": "This string is also to help you understand the problem set"
       }
     ]

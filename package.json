@@ -4,7 +4,8 @@
   "description": "an app that enables efficient searching",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "gulp run-tests",
+    "start": "gulp serve"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-coveralls": "^0.1.4",
+    "gulp-exit": "0.0.2",
     "gulp-istanbul": "^1.1.1",
     "gulp-jasmine": "^2.4.2",
     "gulp-nodemon": "^2.2.1",

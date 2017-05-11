@@ -2,3 +2,5 @@
 .DS_Store
 .env
 .coveralls.yml
+/coverage
+/dist
