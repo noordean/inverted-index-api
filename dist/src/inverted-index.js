@@ -34,21 +34,36 @@ var InvertedIndex = function () {
   function InvertedIndex() {
     _classCallCheck(this, InvertedIndex);
 
-    this.index = {};
+    this.bookIndex = {};
     this.fileName = undefined;
     this.fileContent = undefined;
   }
 
   /**
-   * @description read the uploaded file
+   * @description read/validate the uploaded file
    * @param {string} fileName
    * @return {Object} fileContent
    */
 
 
   _createClass(InvertedIndex, [{
-    key: 'readFile',
-    value: function readFile(fileName) {
+    key: 'validateFile',
+    value: function validateFile(fileName) {
+      var isMalformed = function isMalformed(file) {
+        var getMalformedFile = [];
+        if (Array.isArray(file)) {
+          file.forEach(function (content) {
+            if (content.title === undefined || content.text === undefined) {
+              getMalformedFile.push('error');
+            }
+          });
+        }
+        if (getMalformedFile.length > 0) {
+          return true;
+        }
+        return false;
+      };
+
       this.file = fileName;
       try {
         JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName)));
@@ -57,11 +72,12 @@ var InvertedIndex = function () {
       }
       if (JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName))).length === 0) {
         return 'Empty JSON file';
-      } else if (JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName)))[0].title === undefined || JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName)))[0].text === undefined) {
+      } else if (isMalformed(JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName))))) {
         return 'Malformed JSON file';
       }
       return JSON.parse(_fs2.default.readFileSync(_path2.default.join('fixtures', fileName)));
     }
+
     /**
      * @description validate uploaded file
      * @param {Object} fileContent - The content of the file being uploaded
@@ -71,9 +87,24 @@ var InvertedIndex = function () {
   }, {
     key: 'isValidJSON',
     value: function isValidJSON(fileContent) {
+      // a function that checks if fileContent array contains mainly objects
+      var isObject = function isObject(contents) {
+        var getNonObject = [];
+        contents.forEach(function (content) {
+          if (!(content instanceof Object)) {
+            getNonObject.pull(content);
+          }
+        });
+        if (getNonObject.length > 0) {
+          return false;
+        }
+        return true;
+      };
+
+      // checks if fileContent is valid JSON array, then if it contains objects as elements
       this.fileContent = fileContent;
       if (Array.isArray(fileContent)) {
-        if (fileContent[0] instanceof Object && fileContent[fileContent.length - 1] instanceof Object) {
+        if (isObject(fileContent)) {
           return true;
         }
         return false;
@@ -115,6 +146,7 @@ var InvertedIndex = function () {
       }
       return false;
     }
+
     /**
      * @description: Loop through the uploaded JSON file,convert each key-value to lowercase,
      * split, trim, check for duplicate per object element, create innerIndex and
@@ -128,47 +160,56 @@ var InvertedIndex = function () {
     key: 'createIndex',
     value: function createIndex(fileName, fileContent) {
       if (this.isValidJSON(fileContent) && this.isValidFileName(fileName)) {
-        var innerIndex = {};
+        var createdIndex = {};
         var getAllUniqueTokens = [];
-        for (var i = 0; i < fileContent.length; i += 1) {
-          var getWordsInEachObject = [];
-          var getObjectKeysInFile = Object.keys(fileContent[i]);
-          for (var m = 0; m < getObjectKeysInFile.length; m += 1) {
-            var getWordsInEachKeyOfEachObject = [];
-            var getEachKey = fileContent[i][getObjectKeysInFile[m]].toLowerCase().replace(/\W+/g, ' ').split(' ');
-            for (var j = 0; j < getEachKey.length; j += 1) {
-              if (getWordsInEachKeyOfEachObject.indexOf(getEachKey[j]) === -1) {
-                getWordsInEachKeyOfEachObject.push(getEachKey[j]);
+
+        // a function that returns all unique words in a document
+        var uniqueDocumentWords = function uniqueDocumentWords(content) {
+          var wordsPerDocument = [];
+          var documentKeys = Object.keys(content);
+          for (var documentKey = 0; documentKey < documentKeys.length; documentKey += 1) {
+            var uniqueWordsPerDocumentKey = [];
+            var allWordsPerDocumentKey = content[documentKeys[documentKey]].toLowerCase().replace(/\W+/g, ' ').split(' ');
+            for (var wordPerKey = 0; wordPerKey < allWordsPerDocumentKey.length; wordPerKey += 1) {
+              if (uniqueWordsPerDocumentKey.indexOf(allWordsPerDocumentKey[wordPerKey]) === -1) {
+                uniqueWordsPerDocumentKey.push(allWordsPerDocumentKey[wordPerKey]);
               }
             }
-            for (var k = 0; k < getWordsInEachKeyOfEachObject.length; k += 1) {
-              if (getWordsInEachObject.indexOf(getWordsInEachKeyOfEachObject[k]) === -1) {
-                getWordsInEachObject.push(getWordsInEachKeyOfEachObject[k]);
+
+            for (var uniqueWord = 0; uniqueWord < uniqueWordsPerDocumentKey.length; uniqueWord += 1) {
+              if (wordsPerDocument.indexOf(uniqueWordsPerDocumentKey[uniqueWord]) === -1) {
+                wordsPerDocument.push(uniqueWordsPerDocumentKey[uniqueWord]);
               }
             }
           }
-          getAllUniqueTokens.push.apply(getAllUniqueTokens, getWordsInEachObject);
+          return wordsPerDocument;
+        };
+
+        for (var document = 0; document < fileContent.length; document += 1) {
+          getAllUniqueTokens.push.apply(getAllUniqueTokens, _toConsumableArray(uniqueDocumentWords(fileContent[document])));
         }
+
         getAllUniqueTokens.sort();
+
         getAllUniqueTokens.forEach(function (term) {
-          if (innerIndex[term] !== undefined) {
-            innerIndex[term] = [].concat(_toConsumableArray(innerIndex[term]), [Number(innerIndex[term][innerIndex[term].length - 1] + 1)]);
+          if (createdIndex[term] !== undefined) {
+            createdIndex[term] = [].concat(_toConsumableArray(createdIndex[term]), [Number(createdIndex[term][createdIndex[term].length - 1] + 1)]);
           } else {
-            for (var l = 0; l < fileContent.length; l += 1) {
-              var getObjKeys = Object.keys(fileContent[l]);
-              for (var _i = 0; _i < getObjKeys.length; _i += 1) {
-                if (fileContent[l][getObjKeys[_i]].toLowerCase().split(' ').indexOf(term) !== -1) {
-                  if (innerIndex[term] === undefined) {
-                    innerIndex[term] = [l];
+            for (var _document = 0; _document < fileContent.length; _document += 1) {
+              var documentKeys = Object.keys(fileContent[_document]);
+              for (var key = 0; key < documentKeys.length; key += 1) {
+                if (fileContent[_document][documentKeys[key]].toLowerCase().split(' ').indexOf(term) !== -1) {
+                  if (createdIndex[term] === undefined) {
+                    createdIndex[term] = [_document];
                   }
                 }
               }
             }
           }
         });
-        this.index[fileName] = innerIndex;
-        return this.index;
-      } else if (this.readFile(fileContent) === 'Empty JSON file') {
+        this.bookIndex[fileName] = createdIndex;
+        return this.bookIndex;
+      } else if (this.validateFile(fileContent) === 'Empty JSON file') {
         return { error: 'Index could not be created, an empty file uploaded' };
       }
       return { error: 'Index could not be created, uploaded file must be a valid JSON file and file name must have .json extension' };
@@ -234,7 +275,7 @@ var InvertedIndex = function () {
               };
             }
             return {
-              v: { error: 'Index has not been created for the specified file' }
+              v: { error: 'Index has not been created for the specified file, kindly create an index for it' }
             };
           }
           // search through all the files in the index object and specify the file in which it's found
@@ -250,8 +291,8 @@ var InvertedIndex = function () {
               if (index[getIndexObj[m]][val] !== undefined) {
                 innerResult[val] = index[getIndexObj[m]][val];
               } else {
-                // [-1] specifies 'word not found'
-                innerResult[val] = [-1];
+                // [] specifies 'word not found'
+                innerResult[val] = [];
               }
             });
             searchResult[getIndexObj[m]] = innerResult;
@@ -274,4 +315,5 @@ var InvertedIndex = function () {
   return InvertedIndex;
 }();
 
-exports.default = new InvertedIndex();
+var InvertedIndexObject = new InvertedIndex();
+exports.default = InvertedIndexObject;

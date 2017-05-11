@@ -30,7 +30,7 @@ app.use(_bodyParser2.default.urlencoded({ extended: true }));
 app.use(_bodyParser2.default.json());
 
 app.listen(process.env.PORT, function () {
-  console.log('server now running at ' + process.env.PORT);
+  //console.log('server now running at ' + process.env.PORT);
 });
 
 // load the routes

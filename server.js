@@ -10,8 +10,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
 app.listen(process.env.PORT, () => {
-  console.log('server now running at ' + process.env.PORT);
+  // console.log('server now running at ' + process.env.PORT);
 });
 
 // load the routes

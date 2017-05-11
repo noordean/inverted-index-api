@@ -22,8 +22,10 @@ var _endpointsValidation2 = _interopRequireDefault(_endpointsValidation);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var upload = (0, _multer2.default)({ dest: 'fixtures/' }).single('fileContent'); // specify the uploading directory
-var search = (0, _multer2.default)(); // This is used for search endpoint since no uploading is involved
+// specify the uploading directory
+var upload = (0, _multer2.default)({ dest: 'fixtures/' }).array('fileContent');
+// This is used for search endpoint since no uploading is involved
+var search = (0, _multer2.default)();
 var router = _express2.default.Router();
 
 // create endpoint
@@ -32,13 +34,13 @@ router.post('/api/create', function (req, res) {
     if (err) {
       throw new Error(err);
     }
-    res.json(_endpointsValidation2.default.create(req.body.fileName, req.file));
+    res.json(_endpointsValidation2.default.create(req.body.fileName, req.files));
   });
 });
 
 // search endpoint
 router.post('/api/search', search.single(), function (req, res) {
-  res.json(_endpointsValidation2.default.search(_invertedIndex2.default.index, req.body.fileName, req.body.searchTerms));
+  res.json(_endpointsValidation2.default.search(_invertedIndex2.default.bookIndex, req.body.fileName, req.body.searchTerms));
 });
 
 exports.default = router;

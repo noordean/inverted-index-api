@@ -1,10 +1,12 @@
 import express from 'express';
 import multer from 'multer';
-import invertedIndexObject from '../src/inverted-index';
-import validationObject from './endpoints-validation';
+import invertedIndex from '../src/inverted-index';
+import endpointsValidation from './endpoints-validation';
 
-const upload = multer({ dest: 'fixtures/' }).single('fileContent'); // specify the uploading directory
-const search = multer();       // This is used for search endpoint since no uploading is involved
+// specify the uploading directory
+const upload = multer({ dest: 'fixtures/' }).array('fileContent');
+// This is used for search endpoint since no uploading is involved
+const search = multer();
 const router = express.Router();
 
 
@@ -14,14 +16,14 @@ router.post('/api/create', (req, res) => {
     if (err) {
       throw new Error(err);
     }
-    res.json(validationObject.create(req.body.fileName, req.file));
+    res.json(endpointsValidation.create(req.body.fileName, req.files));
   });
 });
 
 
 // search endpoint
 router.post('/api/search', search.single(), (req, res) => {
-  res.json(validationObject.search(invertedIndexObject.index,
+  res.json(endpointsValidation.search(invertedIndex.bookIndex,
    req.body.fileName, req.body.searchTerms));
 });
 
