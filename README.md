@@ -23,7 +23,7 @@ A valid JSON file must have .json extension and must have a similar structure wi
   }
 ]
 ```
-The API can be tested with postman as described below:
+The API can be tested with postman as described below, but ensure that no header is set:
 - First make a post request to localhost:3000/api/create to create an index with the following form-data bodies:
   - fileName: It is a text which is the name of the file being uploaded
   - fileContent: It is the file itself, which should be uploaded from your machine
@@ -31,7 +31,7 @@ The API can be tested with postman as described below:
   - fileName (Optional): The document you want to search from
   - searchTerms: The words you are searching. It can be an array of words
   
-The API can also be tested with the hosted version at ```not available yet url``` by following exactly the above steps.
+The API can also be tested with the hosted version at ```https://inverted-api.herokuapp.com``` by following exactly the above steps.
 
 ### Note:
 A valid index has a similar structure with the following:
