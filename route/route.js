@@ -27,4 +27,8 @@ router.post('/api/search', search.single(), (req, res) => {
    req.body.fileName, req.body.searchTerms));
 });
 
+// display for index page
+router.get('/', (req, res) => {
+  res.send('Inverted-index-App running...');
+});
 export default router;

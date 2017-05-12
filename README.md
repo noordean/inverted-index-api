@@ -31,7 +31,7 @@ The API can be tested with postman as described below, but ensure that no header
   - fileName (Optional): The document you want to search from
   - searchTerms: The words you are searching. It can be an array of words
   
-The API can also be tested with the hosted version at <a href="https://inverted-api.herokuapp.com">inverted-index-api</a> by following exactly the above steps.
+The API can also be tested with the hosted version at <a href="https://inverted-api.herokuapp.com">inverted-index-api</a> by following the steps above.
 
 ### Note:
 A valid index has a similar structure with the following:
